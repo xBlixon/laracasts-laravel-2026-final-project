@@ -17,6 +17,10 @@ Route::get('/ideas/{idea}', [IdeaController::class, 'show'])
     ->middleware('auth')
     ->name('idea.show');
 
+Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('idea.destroy');
+
 Route::get('/register', [RegisteredUserController::class, 'create'])
     ->middleware('guest');
 Route::post('/register', [RegisteredUserController::class, 'store'])
