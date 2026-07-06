@@ -13,8 +13,8 @@ it('registers a user', function () {
     $this->assertAuthenticated();
 
     expect(Auth::user())->toMatchArray([
-        'name'     => 'John Doe',
-        'email'    => 'foo@bar.com'
+        'name' => 'John Doe',
+        'email' => 'foo@bar.com',
     ]);
 });
 

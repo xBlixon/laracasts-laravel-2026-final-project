@@ -1,9 +1,23 @@
+@php use App\IdeaStatus; @endphp
 <x-layout>
     <div>
         <header class="py-8 md:py-12">
             <h1 class="text-3xl font-bold">Ideas</h1>
             <p class="text-muted-foreground text-sm mt-2">Capture your thoughts. Make a plan.</p>
         </header>
+
+        <div>
+            <a
+                href="{{route('idea.index')}}"
+                class="btn {{ request()->has('status') ? 'btn-outlined' : ''}}"
+            >All <span class="text-xs pl-3">{{ $statusCounts->get('all') }}</span></a>
+            @foreach(IdeaStatus::cases() as $status)
+                <a
+                    href="{{route('idea.index', ['status' => $status->value])}}"
+                    class="btn {{ request()->query('status') === $status->value ? '' : 'btn-outlined'}}"
+                >{{ $status->label() }} <span class="text-xs pl-3">{{ $statusCounts->get($status->value) }}</span></a>
+            @endforeach
+        </div>
 
         <div class="mt-10 text-muted-foreground">
             <div class="grid md:grid-cols-2 gap-6">

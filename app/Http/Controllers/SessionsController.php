@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use Auth;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class SessionsController extends Controller
 {
@@ -16,6 +17,7 @@ class SessionsController extends Controller
     public function destroy()
     {
         Auth::logout();
+
         return redirect('/')->with('success', 'You are now logged out!');
     }
 
@@ -26,13 +28,14 @@ class SessionsController extends Controller
             'password' => ['required', 'string', 'min:8', 'max:255'],
         ]);
 
-        if(!Auth::attempt($attributes)) {
+        if (! Auth::attempt($attributes)) {
             return back()
                 ->withErrors(['password' => 'Wrong email or password.'])
                 ->withInput();
         }
 
         $request->session()->regenerate();
+
         return redirect()->intended('/')->with('success', 'You are now logged in!');
     }
 }
