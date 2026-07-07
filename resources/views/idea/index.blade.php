@@ -1,4 +1,3 @@
-@php use App\IdeaStatus; @endphp
 <x-layout>
     <div>
         <header class="py-8 md:py-12">
@@ -21,7 +20,7 @@
                 href="{{route('idea.index')}}"
                 class="btn {{ request()->has('status') ? 'btn-outlined' : ''}}"
             >All <span class="text-xs pl-3">{{ $statusCounts->get('all') }}</span></a>
-            @foreach(IdeaStatus::cases() as $status)
+            @foreach(App\IdeaStatus::cases() as $status)
                 <a
                     href="{{route('idea.index', ['status' => $status->value])}}"
                     class="btn {{ request()->query('status') === $status->value ? '' : 'btn-outlined'}}"
@@ -50,6 +49,47 @@
     </div>
 
     <x-modal name="create-idea" title="Create new idea">
-        <p>Hello.</p>
+        <form action="{{ route('idea.store') }}" method="post"
+              x-data="{ status: @js(App\IdeaStatus::PENDING->value) }">
+            @csrf
+            <div class="space-y-6">
+                <x-form.field
+                    label="Title" name="title"
+                    placeholder="Your idea title"
+                    autofocus
+                    required
+                />
+
+                <div class="space-y-2">
+                    <label for="status" class="label">Status</label>
+
+                    <div class="flex gap-x-3">
+                        @foreach(App\IdeaStatus::cases() as $status)
+                            <button
+                                type="button"
+                                class="btn flex-1 h-10"
+                                :class="{'btn-outlined': status !== @js($status->value)}"
+                                @click="status = @js($status->value)"
+                            >
+                                {{ $status->label() }}
+                            </button>
+                        @endforeach
+                        <input type="hidden" name="status" :value="status">
+                    </div>
+                    <x-form.error name="status"/>
+                </div>
+
+                <x-form.field
+                    label="Description" name="description"
+                    placeholder="What's on your mind?"
+                    type="textarea"
+                />
+            </div>
+
+            <div class="flex justify-end gap-x-5 mt-4">
+                <button type="button" @click="$dispatch('close-modal')">Cancel</button>
+                <button type="submit" class="btn">Create</button>
+            </div>
+        </form>
     </x-modal>
 </x-layout>
