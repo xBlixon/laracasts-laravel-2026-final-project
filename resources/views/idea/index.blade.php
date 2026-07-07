@@ -10,6 +10,7 @@
                 type="button"
                 x-data
                 @click="$dispatch('open-modal', 'create-idea')"
+                data-test="create-idea-button"
             >
                 <p>What's the idea?</p>
             </x-card>
@@ -50,7 +51,7 @@
 
     <x-modal name="create-idea" title="Create new idea">
         <form action="{{ route('idea.store') }}" method="post"
-              x-data="{ status: @js(App\IdeaStatus::PENDING->value) }">
+              x-data="{ status: @js(App\IdeaStatus::PENDING->value), newLink: '', links: [] }">
             @csrf
             <div class="space-y-6">
                 <x-form.field
@@ -70,6 +71,7 @@
                                 class="btn flex-1 h-10"
                                 :class="{'btn-outlined': status !== @js($status->value)}"
                                 @click="status = @js($status->value)"
+                                data-test="button-status-{{$status->value}}"
                             >
                                 {{ $status->label() }}
                             </button>
@@ -84,6 +86,47 @@
                     placeholder="What's on your mind?"
                     type="textarea"
                 />
+
+                <div>
+                    <fieldset class="space-y-3">
+                        <legend class="label">Links</legend>
+
+                        <template x-for="(link, index) in links" :key="index">
+                            <div class="flex gap-x-2 items-center">
+                                <input name="links[]" x-model="link" class="input">
+                                <button
+                                    type="button"
+                                    @click="links.splice(index, 1)"
+                                    aria-label="Remove link"
+                                    :id="'remove-link-' + index"
+                                >
+                                    <x-icons.x-mark class="form-muted-icon"/>
+                                </button>
+                            </div>
+                        </template>
+
+                        <div class="flex gap-x-2 items-center">
+                            <input
+                                x-model="newLink"
+                                type="url"
+                                id="new-link"
+                                placeholder="http://example.com"
+                                autocomplete="url"
+                                class="input flex-1"
+                                spellcheck="false"
+                                data-test="new-link"
+                            >
+                            <button
+                                type="button"
+                                @click="links.push(newLink.trim()); newLink = '';"
+                                :disabled="newLink.trim().length === 0 "
+                                data-test="submit-new-link"
+                            >
+                                <x-icons.x-mark class="rotate-45 form-muted-icon"/>
+                            </button>
+                        </div>
+                    </fieldset>
+                </div>
             </div>
 
             <div class="flex justify-end gap-x-5 mt-4">
