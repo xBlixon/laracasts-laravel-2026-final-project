@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\IdeaController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\StepController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/ideas');
@@ -24,6 +25,10 @@ Route::get('/ideas/{idea}', [IdeaController::class, 'show'])
 Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])
     ->middleware('auth')
     ->name('idea.destroy');
+
+Route::patch('/steps/{step}', [StepController::class, 'update'])
+    ->middleware('auth')
+    ->name('step.update');
 
 Route::get('/register', [RegisteredUserController::class, 'create'])
     ->middleware('guest');

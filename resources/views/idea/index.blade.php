@@ -51,7 +51,7 @@
 
     <x-modal name="create-idea" title="Create new idea">
         <form action="{{ route('idea.store') }}" method="post"
-              x-data="{ status: @js(App\IdeaStatus::PENDING->value), newLink: '', links: [] }">
+              x-data="{ status: @js(App\IdeaStatus::PENDING->value), newLink: '', links: [], newStep: '', steps: [] }">
             @csrf
             <div class="space-y-6">
                 <x-form.field
@@ -86,6 +86,46 @@
                     placeholder="What's on your mind?"
                     type="textarea"
                 />
+
+                <div>
+                    <fieldset class="space-y-3">
+                        <legend class="label">Actionable Steps</legend>
+
+                        <template x-for="(step, index) in steps" :key="index">
+                            <div class="flex gap-x-2 items-center">
+                                <input name="steps[]" x-model="step" class="input">
+                                <button
+                                    type="button"
+                                    @click="steps.splice(index, 1)"
+                                    aria-label="Remove step"
+                                    :id="'remove-step-' + index"
+                                >
+                                    <x-icons.x-mark class="form-muted-icon"/>
+                                </button>
+                            </div>
+                        </template>
+
+                        <div class="flex gap-x-2 items-center">
+                            <input
+                                x-model="newStep"
+                                id="new-step"
+                                placeholder="What do we do?"
+                                class="input flex-1"
+                                spellcheck="false"
+                                data-test="new-step"
+                            >
+                            <button
+                                type="button"
+                                @click="steps.push(newStep.trim()); newStep = '';"
+                                :disabled="newStep.trim().length === 0 "
+                                data-test="submit-new-link"
+                            >
+                                <x-icons.x-mark class="rotate-45 form-muted-icon"/>
+                            </button>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
 
                 <div>
                     <fieldset class="space-y-3">
@@ -127,7 +167,6 @@
                         </div>
                     </fieldset>
                 </div>
-            </div>
 
             <div class="flex justify-end gap-x-5 mt-4">
                 <button type="button" @click="$dispatch('close-modal')">Cancel</button>
