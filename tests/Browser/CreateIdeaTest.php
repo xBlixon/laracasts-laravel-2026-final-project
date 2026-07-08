@@ -10,6 +10,7 @@ it('creates a new idea', function () {
     $description = 'Example description';
     $link = 'https://example.com';
     $linkToBeRemoved = 'https://page.net';
+    $stepDescription = 'To do something.';
 
     visit('/ideas')
         ->click('@create-idea-button')
@@ -19,6 +20,9 @@ it('creates a new idea', function () {
         ->fill('@new-link', $link)
         ->click('@submit-new-link')
 
+        ->fill('@new-step', $stepDescription)
+        ->click('@submit-new-step')
+
         ->fill('@new-link', $linkToBeRemoved)
         ->click('@submit-new-link')
         ->click('#remove-link-1')
@@ -26,12 +30,14 @@ it('creates a new idea', function () {
         ->click('Create')
         ->assertPathIs('/ideas');
 
-    expect($user->ideas()->count())->toBe(1)
-        ->and($user->ideas()->first())->toMatchArray([
+    expect($idea = $user->ideas()->first())->toMatchArray([
             'title' => $title,
             'status' => IdeaStatus::COMPLETED->value,
             'description' => $description,
             'links' => [$link],
+        ])
+        ->and($idea->steps()->first())->toMatchArray([
+            'description' => $stepDescription,
         ]);
 
 });
