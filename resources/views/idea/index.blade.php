@@ -57,8 +57,8 @@
 
     <x-modal name="create-idea" title="Create new idea">
         <form action="{{ route('idea.store') }}" method="post"
-              x-data="{ status: @js(App\IdeaStatus::PENDING->value), newLink: '', links: [], newStep: '', steps: [] }"
-              enctype="multipart/form-data"
+              x-data="{ status: @js(App\IdeaStatus::PENDING->value), newLink: '', links: [], newStep: '', steps: [], hasImage: false }"
+              x-bind:enctype="hasImage ? 'multipart/form-data' : 'application/x-www-form-urlencoded'"
         >
             @csrf
             <div class="space-y-6">
@@ -97,7 +97,7 @@
 
                 <div class="space-y-2">
                     <label for="image" class="label">Featured Image</label>
-                    <input type="file" name="image" accept="image/*">
+                    <input type="file" name="image" accept="image/*" @change="hasImage = $event.target.files.length > 0">
                     <x-form.error name="image"/>
                 </div>
 
@@ -132,7 +132,7 @@
                                 type="button"
                                 @click="steps.push(newStep.trim()); newStep = '';"
                                 :disabled="newStep.trim().length === 0 "
-                                data-test="submit-new-link"
+                                data-test="submit-new-step"
                             >
                                 <x-icons.x-mark class="rotate-45 form-muted-icon"/>
                             </button>

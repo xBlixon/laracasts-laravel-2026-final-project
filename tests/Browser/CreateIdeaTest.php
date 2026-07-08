@@ -1,6 +1,7 @@
 <?php
 
 use App\IdeaStatus;
+use App\Models\Idea;
 use App\Models\User;
 
 it('creates a new idea', function () {
