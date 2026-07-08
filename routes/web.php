@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\IdeaController;
+use App\Http\Controllers\IdeaImageController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\StepController;
@@ -22,9 +23,17 @@ Route::get('/ideas/{idea}', [IdeaController::class, 'show'])
     ->middleware('auth')
     ->name('idea.show');
 
+Route::patch('/ideas/{idea}', [IdeaController::class, 'update'])
+    ->middleware('auth')
+    ->name('idea.update');
+
 Route::delete('/ideas/{idea}', [IdeaController::class, 'destroy'])
     ->middleware('auth')
     ->name('idea.destroy');
+
+Route::delete('/ideas/{idea}/image', [IdeaImageController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('idea.image.destroy');
 
 Route::patch('/steps/{step}', [StepController::class, 'update'])
     ->middleware('auth')
