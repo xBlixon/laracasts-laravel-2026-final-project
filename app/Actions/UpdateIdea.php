@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Models\Idea;
-use App\Models\User;
-use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Support\Facades\DB;
 
 class UpdateIdea
@@ -24,7 +22,7 @@ class UpdateIdea
             $data['image_path'] = $attributes['image']->store('ideas', 'public');
         }
 
-        DB::transaction(function () use ($idea ,$data, $attributes) {
+        DB::transaction(function () use ($idea, $data, $attributes) {
             $idea->update($data);
 
             $idea->steps()->delete();

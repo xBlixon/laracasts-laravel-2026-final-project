@@ -18,12 +18,11 @@ it('edits a profile', function () {
         ->assertValue('email', $user->email)
         ->fill('email', 'new@email.net')
         ->click('Update Account')
-        ->assertSee('Profile updated!')
-    ;
+        ->assertSee('Profile updated!');
 
     expect($user->fresh())->toMatchArray([
         'name' => 'New name',
-        'email' => 'new@email.net'
+        'email' => 'new@email.net',
     ]);
 });
 
@@ -41,10 +40,7 @@ it('notifies the original email on edit', function () {
         ->assertValue('email', $user->email)
         ->fill('email', 'new@email.net')
         ->click('Update Account')
-        ->assertSee('Profile updated!')
-    ;
+        ->assertSee('Profile updated!');
 
-    Notification::assertSentOnDemand(EmailChanged::class, function (EmailChanged $notification, $routes, $notifiable) use ($originalEmail) {
-        return $notifiable->routes['mail'] === $originalEmail;
-    });
+    Notification::assertSentOnDemand(EmailChanged::class, fn (EmailChanged $notification, $routes, $notifiable) => $notifiable->routes['mail'] === $originalEmail);
 });
