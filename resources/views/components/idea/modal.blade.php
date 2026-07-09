@@ -6,7 +6,7 @@
            newLink: '',
            links: @js(old('links', $idea->links ?? [])),
            newStep: '',
-           steps: @js(old('steps', $idea->steps->map(fn($step) => $step->description))),
+           steps: @js(old('steps', $idea->steps->map->only(['id', 'description', 'completed']))),
            hasImage: false
            }"
           x-bind:enctype="hasImage ? 'multipart/form-data' : 'application/x-www-form-urlencoded'"
@@ -72,7 +72,8 @@
 
                     <template x-for="(step, index) in steps" :key="index">
                         <div class="flex gap-x-2 items-center">
-                            <input name="steps[]" x-model="step" class="input">
+                            <input :name="`steps[${index}][description]`" x-model="step.description" class="input">
+                            <input type="hidden" :name="`steps[${index}][completed]`" x-model="step.completed ? '1' : '0'" class="input">
                             <button
                                 type="button"
                                 @click="steps.splice(index, 1)"
@@ -95,7 +96,8 @@
                         >
                         <button
                             type="button"
-                            @click="steps.push(newStep.trim()); newStep = '';"
+                            @click="
+                            steps.push({description: newStep.trim(), completed: false }); newStep = '';"
                             :disabled="newStep.trim().length === 0 "
                             data-test="submit-new-step"
                         >
