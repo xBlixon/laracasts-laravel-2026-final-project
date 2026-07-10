@@ -7,7 +7,7 @@
         </div>
         <div class="flex gap-x-5 items-center">
             @auth
-                <a href="/profile/edit">Profile Edit</a>
+                <a href="/profile">Profile Edit</a>
 
                 <form action="/logout" method="POST">
                     @csrf
